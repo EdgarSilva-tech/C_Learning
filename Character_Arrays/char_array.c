@@ -5,6 +5,7 @@
 int get_line(char line[], int maxline, int prt_lim);
 void copy(char to[], char from[]);
 void delLast(char arr[], int *n);
+int fullEmpty(char arr[]);
 
 /* print the longest input line */
 int main() {
@@ -16,14 +17,16 @@ int main() {
 
   max = 0;
 
-  while ((len = get_line(line, MAXLINE, 100)) > 0)
+  while ((len = get_line(line, MAXLINE, 100)) > 0) {
     if (len > max) {
       max = len;
       copy(longest, line);
     }
+  }
 
-  if (max > 0) /* there was a line */
+  if (max > 0) { /* there was a line */
     printf("Longest: %s", longest);
+  }
   return 0;
 }
 
@@ -38,7 +41,7 @@ int get_line(char s[], int lim, int prt_lim) {
 
   int array_size = strlen(s);
   printf("Get line array size: %d\n", array_size);
-  delLast(s, &array_size);
+  printf("Is this empty: %d\n", fullEmpty(s));
 
   if (c == '\n') {
     s[i] = c;
@@ -71,8 +74,9 @@ void copy(char to[], char from[]) {
   int i;
   i = 0;
 
-  while ((to[i] = from[i]) != '\0')
+  while ((to[i] = from[i]) != '\0') {
     ++i;
+  }
 }
 
 void delLast(char arr[], int *n) {
@@ -91,3 +95,27 @@ void delLast(char arr[], int *n) {
     }
   }
 }
+
+int fullEmpty(char arr[]) {
+  int counter;
+  int size;
+
+  size = strlen(arr);
+  counter = 0;
+
+  for (int i = 0; i < size; ++i) {
+    printf("Current member of the array: %c\n", arr[i]);
+    if (arr[i] == ' ') {
+      ++counter;
+    }
+  }
+  printf("Counter vs size: %d - %d\n", counter, size);
+
+  if (counter == size) {
+    return 1;
+  } else {
+    return 0;
+  }
+  return 7;
+}
+
