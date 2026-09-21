@@ -116,6 +116,6 @@ int fullEmpty(char arr[]) {
   } else {
     return 0;
   }
-  return 7;
+  return 0;
 }
 
