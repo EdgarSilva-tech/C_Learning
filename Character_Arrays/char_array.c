@@ -2,36 +2,52 @@
 #include <string.h>
 #define MAXLINE 1000 /* maximum input line length */
 
-int get_line(char line[], int maxline, int prt_lim);
+typedef struct {
+  int index;
+  int empty_state;
+} line_ouput;
+
+typedef struct {
+  char reversed[MAXLINE];
+} reversed_array;
+
+line_ouput get_line(char line[], int maxline, int prt_lim);
 void copy(char to[], char from[]);
-void delLast(char arr[], int *n);
-int fullEmpty(char arr[]);
+int fullEmpty(char arr[], int size);
+reversed_array reverse(char arr[]);
 
 /* print the longest input line */
 int main() {
 
-  int len;               /* current line length */
+  line_ouput len;        /* current line length */
   int max;               /* maximum length seen so far */
   char line[MAXLINE];    /* current input line */
   char longest[MAXLINE]; /* longest line saved here */
 
   max = 0;
 
-  while ((len = get_line(line, MAXLINE, 100)) > 0) {
-    if (len > max) {
-      max = len;
-      copy(longest, line);
+  while ((len = get_line(line, MAXLINE, 100)).index > 0) {
+    if (len.index > max) {
+      max = len.index;
+      if (len.empty_state == 0) {
+        copy(longest, line);
+      }
     }
   }
 
   if (max > 0) { /* there was a line */
     printf("Longest: %s", longest);
   }
+
+  reversed_array test_reverse = reverse(longest);
+  for (int c = 0; c < strlen(longest); ++c) {
+    printf("Reversed longest: %c\n", test_reverse.reversed[c]);
+  }
   return 0;
 }
 
 /* getline: read a line into s, return length */
-int get_line(char s[], int lim, int prt_lim) {
+line_ouput get_line(char s[], int lim, int prt_lim) {
 
   int c, i;
 
@@ -41,7 +57,8 @@ int get_line(char s[], int lim, int prt_lim) {
 
   int array_size = strlen(s);
   printf("Get line array size: %d\n", array_size);
-  printf("Is this empty: %d\n", fullEmpty(s));
+  line_ouput result;
+  result.empty_state = fullEmpty(s, array_size);
 
   if (c == '\n') {
     s[i] = c;
@@ -49,10 +66,10 @@ int get_line(char s[], int lim, int prt_lim) {
   }
 
   s[i] = '\0';
+  result.index = i;
 
   if (i <= prt_lim) {
-    printf("Length of the line: %d\n", i);
-    for (int j = 0; j < prt_lim; ++j) {
+    for (int j = 0; j < array_size; ++j) {
       if (s[j] == '\n') {
         printf("\\n\n");
       } else if (s[j] == '\t') {
@@ -65,7 +82,7 @@ int get_line(char s[], int lim, int prt_lim) {
     }
   }
 
-  return i;
+  return result;
 }
 
 /* copy: copy 'from' into 'to'; assume to is big enough */
@@ -79,28 +96,9 @@ void copy(char to[], char from[]) {
   }
 }
 
-void delLast(char arr[], int *n) {
-  int arr_size = *n;
-  printf("Array size: %d\n", arr_size);
-
-  for (int i = arr_size - 3; i > 0; --i) {
-    printf("Current character: %d - %c\n", i, arr[i]);
-    if (arr[i] == ' ' || arr[i] == '\t') {
-      printf("Remove: %c\n", arr[i]);
-      (*n)--;
-      printf("Array size after decrement: %d\n", arr_size);
-    } else {
-      printf("Went straight to the else condition\n");
-      break;
-    }
-  }
-}
-
-int fullEmpty(char arr[]) {
+int fullEmpty(char arr[], int size) {
   int counter;
-  int size;
 
-  size = strlen(arr);
   counter = 0;
 
   for (int i = 0; i < size; ++i) {
@@ -119,3 +117,17 @@ int fullEmpty(char arr[]) {
   return 0;
 }
 
+reversed_array reverse(char arr[]) {
+  int size_arr = strlen(arr);
+  int c;
+  reversed_array reverse_arr;
+
+  c = size_arr - 1;
+
+  for (int i = 0; i < size_arr ; ++i) {
+    reverse_arr.reversed[i] = arr[c];
+    --c;
+  }
+
+  return reverse_arr;
+}
