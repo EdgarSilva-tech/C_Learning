@@ -75,22 +75,6 @@ void copy(void) {
   }
 }
 
-void del(int arr[], int *n, int key) {
-  
-  	// Find the element
-  	int i = 0;
-  	while (arr[i] != key) i++;
-  	
-    // Shifting the right side elements one
-  	// position towards left
-    for (int j = i; j < *n - 1; j++) {
-        arr[j] = arr[j + 1];
-    }
-  
-  	// Decrease the size
-    (*n)--; 
-}
-
 void entab(void) {
   extern int c, i;
   extern char line[];
@@ -100,6 +84,7 @@ void entab(void) {
   extern int start_col;
   int spaces_removed = 0;
 
+  i = start_col;
 
   while (num_spaces > 0) {
   
@@ -107,19 +92,22 @@ void entab(void) {
       spaces_to_fill = TAB_SPACES - (start_col % TAB_SPACES);
       spaces_removed = spaces_removed + spaces_to_fill;
       printf("C: %c\n", c);
-      line[i - num_spaces] = '\t';
+      printf("Second char: %d\n", line[1]);
+      line[i] = '\t';
       num_spaces = num_spaces - spaces_to_fill;
       printf("Spaces to fill: %d\n", spaces_to_fill);
       printf("Number of spaces: %d - %d\n", num_spaces, i);
       start_col = start_col + spaces_to_fill;
+      i++;
     } else {
       printf("C: %c\n", c);
       printf("Number of spaces left: %d\n", num_spaces);
       printf("Current index: %d\n", i);
 
       for (int k = num_spaces; k > 0; --k) {
-        line[i - num_spaces] = ' ';
+        line[i] = ' ';
         --num_spaces;
+        i++;
         printf("K is: %d\n", k);
       }
       num_spaces = 0;
