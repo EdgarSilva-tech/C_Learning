@@ -12,6 +12,8 @@ int get_line(void);
 void copy(void);
 void entab(void);
 int start_col;
+int start_idx;
+int col;       
 
 /* print longest input line; specialized version */
 int main() {
@@ -26,7 +28,7 @@ int main() {
     }
   }
   if (max > 0) { /* there was a line */
-    printf("%s", longest);
+    printf("%s\n", longest);
   }
   return 0;
 }
@@ -38,21 +40,29 @@ int get_line(void) {
   extern int num_spaces;
   extern int last_char;
   extern int start_col;
+  extern int start_idx;
+  extern int col;
+
   num_spaces = 0;
+  col = 0;
+  last_char = 0;
 
   for (i = 0; i < MAXLINE - 1 && (c = getchar()) != EOF && c != '\n'; ++i) {
     printf("Index: %d and num spaces: %d\n", i, num_spaces);
     if (c == ' ') {
       if (last_char != ' ') {
-        start_col = i;
+        start_col = col;   /* was: start_col = i; */
+        start_idx = i;        
         printf("Starting column: %d\n", start_col);
       }
       line[i] = c;
       ++num_spaces;
       last_char = c;
+      ++col;
     } else {
       entab();
       line[i] = c;
+      ++col;
       printf("Index after the entab function: %d\n", i);
       num_spaces = 0;
       last_char = c;
@@ -71,6 +81,7 @@ void copy(void) {
   extern char line[], longest[];
   i = 0;
   while ((longest[i] = line[i]) != '\0') {
+    printf("Char: %c\n", longest[i]);
     ++i;
   }
 }
@@ -82,9 +93,13 @@ void entab(void) {
   extern int num_spaces;
   unsigned int spaces_to_fill;
   extern int start_col;
+  extern int start_idx;
   int spaces_removed = 0;
+  int start;
 
-  i = start_col;
+  if (num_spaces > 0) {
+    i = start_idx;
+  }
 
   while (num_spaces > 0) {
   
@@ -92,7 +107,7 @@ void entab(void) {
       spaces_to_fill = TAB_SPACES - (start_col % TAB_SPACES);
       spaces_removed = spaces_removed + spaces_to_fill;
       printf("C: %c\n", c);
-      printf("Second char: %d\n", line[1]);
+      printf("Second char: %d\n", line[i]);
       line[i] = '\t';
       num_spaces = num_spaces - spaces_to_fill;
       printf("Spaces to fill: %d\n", spaces_to_fill);
